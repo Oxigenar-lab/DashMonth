@@ -356,7 +356,7 @@
     </div>
 
     <div class="legend-row">
-      <span class="legend-chip"><span class="dot" style="background:var(--red)"></span>Cancelada (linha vermelha)</span>
+      <span class="legend-chip"><span class="dot" style="background:var(--red)"></span>Enviada errada (linha vermelha)</span>
       <span class="legend-chip"><span class="dot" style="background:var(--gray)"></span>Demais status (sem marcação, amarelo, verde etc.)</span>
     </div>
 
@@ -367,7 +367,7 @@
         <div class="sub" id="kpi-total-sub">&nbsp;</div>
       </div>
       <div class="kpi" style="--accent:var(--red)">
-        <div class="lbl">Canceladas</div>
+        <div class="lbl">Enviadas erradas</div>
         <div class="val" id="kpi-cancel">—</div>
         <div class="sub" id="kpi-cancel-sub">&nbsp;</div>
       </div>
@@ -385,7 +385,7 @@
 
     <div class="tabs">
       <button class="tab-btn active" data-tab="geral">Visão geral</button>
-      <button class="tab-btn" data-tab="cancel">Cancelamentos</button>
+      <button class="tab-btn" data-tab="cancel">Enviadas erradas</button>
       <button class="tab-btn" data-tab="vendas">Vendas</button>
       <button class="tab-btn" data-tab="recolhimentos">Recolhimentos</button>
       <button class="tab-btn" data-tab="consideracoes">Considerações</button>
@@ -415,16 +415,16 @@
     <div class="tab-panel" id="tab-cancel">
       <div class="grid-2">
         <div class="card">
-          <h3>Principais motivos de cancelamento</h3>
+          <h3>Principais motivos de envio errado</h3>
           <div class="chart-box mid"><canvas id="chart-motivos"></canvas></div>
         </div>
         <div class="card">
-          <h3>Unidades com mais cancelamentos</h3>
+          <h3>Unidades com mais envios errados</h3>
           <div class="chart-box mid"><canvas id="chart-unid-cancel"></canvas></div>
         </div>
       </div>
       <div class="card">
-        <h3>Detalhamento das solicitações canceladas <span class="n" id="cancel-count-n"></span></h3>
+        <h3>Detalhamento das solicitações enviadas erradas <span class="n" id="cancel-count-n"></span></h3>
         <div class="scroll-table">
           <table class="data-table">
             <thead><tr><th>ID</th><th>Data</th><th>Unidade</th><th>Colaborador</th><th>Tipo</th><th>Motivo</th></tr></thead>
@@ -503,13 +503,13 @@
       <div class="card">
         <h3>Suas observações</h3>
         <p style="font-size:12px;color:var(--ink-faint);margin:-8px 0 14px;">Use este espaço para complementar com contexto que só você tem (ex: campanhas, eventos, mudanças de equipe). O texto some ao recarregar a página — copie antes de fechar, ou use "Baixar PDF" com ele já preenchido.</p>
-        <textarea id="notes-box" placeholder="Ex: cancelamento de março subiu por causa da mudança no sistema de pagamento da unidade X..."></textarea>
+        <textarea id="notes-box" placeholder="Ex: envios errados de março subiram por causa da mudança no sistema de pagamento da unidade X..."></textarea>
       </div>
     </div>
 
     <footer class="note">
       <span class="tag">Metodologia</span>
-      Uma solicitação é considerada <b>cancelada</b> quando a linha inteira está pintada de vermelho na planilha original (o motivo vem da coluna "PENDÊNCIAS"). <b>As solicitações canceladas ficam fora de todos os números de "Visão geral", "Vendas" e "Recolhimentos"</b> — elas só entram na contagem da aba "Cancelamentos", pra não misturar solicitação que de fato aconteceu com solicitação que foi cancelada. O número de <b>vendas</b> conta apenas as linhas com a coluna "Produtos(s) vendido(s)..." preenchida, para evitar contagem duplicada com outras colunas de venda da planilha. Os <b>recolhimentos</b> usam o motivo do campo "Motivo:", agrupado automaticamente por palavras-chave (ex.: menções a "Oxigenar"/"conosco"/"com a gente" contam como venda para a própria empresa; "concorrente"/"Pulmonair"/"internet" contam como venda perdida). As linhas pintadas de amarelo durante o mês não são analisadas aqui — ficam reservadas para a futura integração com o Google Looker Studio.<br><br>
+      Uma solicitação é considerada <b>enviada errada</b> quando a linha inteira está pintada de vermelho na planilha original — significa que o representante enviou o formulário com algo faltando ou incorreto (o motivo vem da coluna "PENDÊNCIAS"), não que o cliente cancelou o serviço. <b>Essas solicitações ficam fora de todos os números de "Visão geral", "Vendas" e "Recolhimentos"</b> — elas só entram na contagem da aba "Enviadas erradas", pra não misturar solicitação que de fato aconteceu com solicitação que precisou ser refeita. O número de <b>vendas</b> conta apenas as linhas com a coluna "Produtos(s) vendido(s)..." preenchida, para evitar contagem duplicada com outras colunas de venda da planilha. Os <b>recolhimentos</b> usam o motivo do campo "Motivo:", agrupado automaticamente por palavras-chave (ex.: menções a "Oxigenar"/"conosco"/"com a gente" contam como venda para a própria empresa; "concorrente"/"Pulmonair"/"internet" contam como venda perdida). As linhas pintadas de amarelo durante o mês não são analisadas aqui — ficam reservadas para a futura integração com o Google Looker Studio.<br><br>
       <b>Sobre exportar para PowerPoint:</b> este painel roda inteiramente no seu navegador, então gerar um .pptx nativo aqui não é confiável. Use "Baixar PDF" para um retrato rápido, ou envie este mesmo arquivo no chat com a Claude para gerar uma apresentação em PowerPoint.
     </footer>
 
@@ -797,7 +797,7 @@
     const dmin = rows[0].ts, dmax = rows[rows.length-1].ts;
     document.getElementById('kpi-total-sub').textContent = fmtDateFullBR(dmin) + ' – ' + fmtDateFullBR(dmax);
     document.getElementById('kpi-cancel').textContent = canceladas.length.toLocaleString('pt-BR');
-    document.getElementById('kpi-cancel-sub').textContent = (total? (canceladas.length/total*100).toFixed(1) : '0') + '% do total bruto (realizadas + canceladas)';
+    document.getElementById('kpi-cancel-sub').textContent = (total? (canceladas.length/total*100).toFixed(1) : '0') + '% do total bruto (realizadas + enviadas erradas)';
     document.getElementById('kpi-vendas').textContent = vendas.length.toLocaleString('pt-BR');
     document.getElementById('kpi-vendas-sub').textContent = (realizadas.length? (vendas.length/realizadas.length*100).toFixed(1) : '0') + '% das solicitações realizadas';
 
@@ -925,16 +925,16 @@
       const u = uniMap[0];
       insights.push(`A unidade com mais solicitações foi <b>${escapeHtml(u[0])}</b>, com <b>${u[1]}</b> solicitações (${(u[1]/realizadas.length*100).toFixed(1)}% do total).`);
     }
-    insights.push(`Taxa de cancelamento: <b>${(total? (canceladas.length/total*100).toFixed(1):'0')}%</b> (${canceladas.length} de ${total} solicitações no total bruto).`);
+    insights.push(`Taxa de envio errado: <b>${(total? (canceladas.length/total*100).toFixed(1):'0')}%</b> (${canceladas.length} de ${total} solicitações no total bruto).`);
     if(motivoMap.length){
       const m = motivoMap[0];
-      insights.push(`O principal motivo de cancelamento foi <b>${escapeHtml(m[0])}</b>, com <b>${m[1]}</b> casos.`);
+      insights.push(`O principal motivo de envio errado foi <b>${escapeHtml(m[0])}</b>, com <b>${m[1]}</b> casos.`);
     }
     if(uniCancelMap.length){
       const uc = uniCancelMap[0];
       const uTotal = uniMap.find(e=>e[0]===uc[0]);
       const uTotalCount = uTotal ? uTotal[1] + uc[1] : uc[1];
-      insights.push(`A unidade com mais cancelamentos foi <b>${escapeHtml(uc[0])}</b>, com <b>${uc[1]}</b> casos (${(uc[1]/uTotalCount*100).toFixed(1)}% das solicitações dessa unidade).`);
+      insights.push(`A unidade com mais envios errados foi <b>${escapeHtml(uc[0])}</b>, com <b>${uc[1]}</b> casos (${(uc[1]/uTotalCount*100).toFixed(1)}% das solicitações dessa unidade).`);
     }
     insights.push(`<b>${(realizadas.length? (receita.length/realizadas.length*100).toFixed(1):'0')}%</b> das solicitações realizadas geram receita (${receita.length} de ${realizadas.length}).`);
     insights.push(`Das solicitações realizadas, <b>${(realizadas.length? (vendas.length/realizadas.length*100).toFixed(1):'0')}%</b> tiveram venda registrada na coluna W (${vendas.length} de ${realizadas.length}).`);
